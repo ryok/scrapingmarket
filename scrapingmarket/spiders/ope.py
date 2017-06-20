@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import scrapy
+from scrapingmarket.items import OpeOffer
 
 
 class OpeSpider(scrapy.Spider):
