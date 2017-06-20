@@ -16,3 +16,7 @@ class ScrapingmarketItem(scrapy.Item):
 class Headline(scrapy.Item):
     title = scrapy.Field()
     body = scrapy.Field()
+
+class OpeOffer(scrapy.Item):
+    offer = scrapy.Field()
+    

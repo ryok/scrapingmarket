@@ -13,4 +13,7 @@ class OpeSpider(scrapy.Spider):
             yield scrapy.Request(response.urljoin(url), self.parse_opes)
 
     def parse_opes(self, response):
-        pass
+        """ページからオペの内容を抜き出す"""
+        item = OpeOffer()
+        item['offer'] = response.css('td::text').extract()
+        yield item
