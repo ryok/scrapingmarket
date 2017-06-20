@@ -12,5 +12,5 @@ class OpeSpider(scrapy.Spider):
         for url in response.css('ul a::attr("href")').re(r'stat/of\d+.htm$'):
             yield scrapy.Request(response.urljoin(url), self.parse_opes)
 
-    def parse_opes(self.response)
+    def parse_opes(self, response)
         pass
