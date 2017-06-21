@@ -20,7 +20,7 @@ class OpeSpider(scrapy.Spider):
         item['title'] = response.css('title::text').extract()
         num = 1
         for tr in response.css('tr::text').extract():
-            itemKey = 'offer' + str(num)
-            item['offer1'] = tr
+            itemKey = 'offer' + str(num) + 'r'
+            item[itemKey] = tr
             num+=1
         yield item
