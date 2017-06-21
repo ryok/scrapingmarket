@@ -18,7 +18,7 @@ class OpeSpider(scrapy.Spider):
         """
         item = OpeOffer()
         item['title'] = response.css('title::text').extract()
-        item['bid'] = response.css('td::text').extract()
+        item['offer'] = response.css('td::text').extract()
         #num = 1
         #for tr in response.css('tr::text').extract():
         #    itemKey = 'offer'
