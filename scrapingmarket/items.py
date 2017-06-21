@@ -10,5 +10,5 @@ import scrapy
 
 class OpeOffer(scrapy.Item):
     title = scrapy.Field()
-    offer = scrapy.Field()
+    bid = scrapy.Field()
     
