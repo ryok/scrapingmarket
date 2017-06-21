@@ -16,5 +16,7 @@ class OpeSpider(scrapy.Spider):
     def parse_opes(self, response):
         """ページからオペの内容を抜き出す"""
         item = OpeOffer()
+        item['title'] = response.css('title::text').extract()
         item['offer'] = response.css('td::text').extract()
         yield item
+
