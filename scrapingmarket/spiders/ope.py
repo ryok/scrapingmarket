@@ -21,6 +21,6 @@ class OpeSpider(scrapy.Spider):
         num = 1
         for tr in response.css('tr::text').extract():
             itemKey = 'offer' + str(num)
-            item[itemKey] = tr
+            item['offer1'] = tr
             num+=1
         yield item
