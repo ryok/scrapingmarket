@@ -14,7 +14,9 @@ class ScrapingmarketPipeline(object):
 class MongoPipeline(object):
 
     def open_spider(self, spider):
-        self.client = MongoClient('https://scraping-pool-mongo.documents.azure.com', 443)
+        uri = "mongodb://scraping-pool-mongo:5rq1tRCSzkr6algHaLa9FZ4aFKGNcZ6FJgq9Z182fpiSxvKspf42wOGUoHPvHaq3NUMRunAcuHO1rTxUVeYjkg==@scraping-pool-mongo.documents.azure.com:10255/?ssl=true&replicaSet=globaldb"
+        #client = pymongo.MongoClient(uri)
+        self.client = MongoClient(uri)
         self.db = self.client['scraping-book']
         self.collection = self.db['items']
 
