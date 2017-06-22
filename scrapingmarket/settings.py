@@ -68,6 +68,9 @@ DOWNLOAD_DELAY = 1
 #ITEM_PIPELINES = {
 #    'scrapingmarket.pipelines.ScrapingmarketPipeline': 300,
 #}
+ITEM_PIPELINES = {
+    'scrapingmarket.pipelines.MongoPipeline': 800,
+}
 
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See http://doc.scrapy.org/en/latest/topics/autothrottle.html
