@@ -75,26 +75,26 @@ class MongoPipeline(object):
 
     def process_item(self, item, spider):
         # Create some documents
-        for entry in item:
-            self.date = re.sub('^ooo', '', entry['title'])
-            self.data = {
-                'date':self.date,
-                'title':entry['title'],
-                'offer':entry['offer']
-            }
-            # check if duplicated
-            self.documents = list(self.client.QueryDocuments(
-                self.collection['_self'],
-                {
-                    'query': 'SELECT * FROM root r WHERE r.title=@title',
-                    'parameters': [
-                        { 'name':'@title', 'value':self.data['title'] }
-                    ]
-                }))
-            if (len(self.documents) < 1):
-                # only create if it's fully new document
-                print ("document is added:title: %s" % self.data['title'])
-                self.created_document = self.client.CreateDocument(
-                        self.collection['_self'], self.data)
-        #self.collection.insert_one(dict(item))
+        #for entry in item:
+        self.date = re.sub('^ooo', '', item['title'])
+        self.data = {
+            'date':self.date,
+            'title':item['title'],
+            'offer':item['offer']
+        }
+        # check if duplicated
+        self.documents = list(self.client.QueryDocuments(
+            self.collection['_self'],
+            {
+                'query': 'SELECT * FROM root r WHERE r.title=@title',
+                'parameters': [
+                    { 'name':'@title', 'value':self.data['title'] }
+                ]
+            }))
+        if (len(self.documents) < 1):
+            # only create if it's fully new document
+            print ("document is added:title: %s" % self.data['title'])
+            self.created_document = self.client.CreateDocument(
+                    self.collection['_self'], self.data)
+    #self.collection.insert_one(dict(item))
         #return item
