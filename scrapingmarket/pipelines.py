@@ -79,9 +79,9 @@ class MongoPipeline(object):
         #self.date = re.sub('^ooo', '', item['title'])
         self.data = {
             'date':item['date'],
-            'url':item['url'],
             'title':item['title'],
-            'offer':item['offer']
+            'offer':item['offer'],
+            'url':item['url']
         }
         # check if duplicated
         self.documents = list(self.client.QueryDocuments(

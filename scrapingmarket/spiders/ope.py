@@ -20,9 +20,9 @@ class OpeSpider(scrapy.Spider):
         """
         item = OpeOffer()
         item['date'] = re.sub('^ba','20',re.sub('.htm$','',response.url.split('/')[-1]) )
-        item['url'] = response.url
         item['title'] = response.css('title::text').extract()
         item['offer'] = response.css('td::text').extract()
+        item['url'] = response.url
         #num = 1
         #for tr in response.css('tr::text').extract():
         #    itemKey = 'offer'
