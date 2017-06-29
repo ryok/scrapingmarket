@@ -6,6 +6,7 @@
 # See: http://doc.scrapy.org/en/latest/topics/item-pipeline.html
 #from pymongo import MongoClient
 from scrapy.exceptions import DropItem
+import re
 import pydocumentdb
 import pydocumentdb.document_client as document_client
 
@@ -75,7 +76,7 @@ class MongoPipeline(object):
     def process_item(self, item, spider):
         # Create some documents
         for entry in item:
-            self.date = item['title'].replace('落札結果（', '').replace('）', '')
+            self.date = re.sub('^落札結果（', '', item['title'])
             self.data = {
                 'date':self.date,
                 'title':entry['title'],
