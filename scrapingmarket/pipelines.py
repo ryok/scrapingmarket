@@ -80,6 +80,7 @@ class MongoPipeline(object):
         self.data = {
             'date':item['date'],
             'title':item['title'],
+            'header':item['header'],
             'offer':item['offer'],
             'url':item['url']
         }
