@@ -9,6 +9,7 @@ import scrapy
 
 
 class OpeOffer(scrapy.Item):
+    url = scrapy.Field()
     title = scrapy.Field()
     offer = scrapy.Field()
     

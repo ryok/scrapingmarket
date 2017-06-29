@@ -76,9 +76,9 @@ class MongoPipeline(object):
     def process_item(self, item, spider):
         # Create some documents
         #for entry in item:
-        self.date = re.sub('^ooo', '', item['title'])
+        #self.date = re.sub('^ooo', '', item['title'])
         self.data = {
-            'date':self.date,
+            'url':item['url'],
             'title':item['title'],
             'offer':item['offer']
         }
