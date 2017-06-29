@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import re
 import scrapy
 from scrapingmarket.items import OpeOffer
 
@@ -18,7 +19,7 @@ class OpeSpider(scrapy.Spider):
         ページからオペの内容を抜き出す
         """
         item = OpeOffer()
-        item['date'] = response.url.split('/')[-1]
+        item['date'] = re.sub('^ba','20',re.sub('.htm$','',response.url.split('/')[-1]) )
         item['url'] = response.url
         item['title'] = response.css('title::text').extract()
         item['offer'] = response.css('td::text').extract()
