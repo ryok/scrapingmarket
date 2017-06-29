@@ -37,18 +37,18 @@ class MongoPipeline(object):
         # Initialize the Python DocumentDB client
         self.client = document_client.DocumentClient(config['ENDPOINT'], {'masterKey': config['MASTERKEY']})
         # create a database if not yet created
-        database_definition = {'id': config['DOCUMENTDB_DATABASE'] }
-        databases = list(client.QueryDatabases({
+        self.database_definition = {'id': config['DOCUMENTDB_DATABASE'] }
+        self.databases = list(self.client.QueryDatabases({
                 'query': 'SELECT * FROM root r WHERE r.id=@id',
                 'parameters': [
-                    { 'name':'@id', 'value': database_definition['id'] }
+                    { 'name':'@id', 'value': self.database_definition['id'] }
                 ]
             }))
-        if ( len(databases) > 0 ):
+        if ( len(self.databases) > 0 ):
             self.db = databases[0]
         else:
             print ("database is created:%s" % config['DOCUMENTDB_DATABASE'])
-            self.db = client.CreateDatabase(database_definition)
+            self.db = self.client.CreateDatabase(self.database_definition)
 
         # Create collection options
         options = {
