@@ -15,9 +15,9 @@ config = {
 };
 
 class ValidationPipline(object):
-    ""
+    """
     itemを検証するPipline
-    ""
+    """
     def process_item(self, item, spider):
         if not item['title']:
             raise DropItem('Missing title')

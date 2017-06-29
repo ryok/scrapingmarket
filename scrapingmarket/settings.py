@@ -70,6 +70,7 @@ DOWNLOAD_DELAY = 1
 #}
 ITEM_PIPELINES = {
     'scrapingmarket.pipelines.MongoPipeline': 800,
+    'scrapingmarket.pipelines.ValidationPipline': 300,
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)
