@@ -18,6 +18,7 @@ class OpeSpider(scrapy.Spider):
         ページからオペの内容を抜き出す
         """
         item = OpeOffer()
+        item['date'] = response.css('title::text').extract().replace('落札結果（', '')
         item['title'] = response.css('title::text').extract()
         item['offer'] = response.css('td::text').extract()
         #num = 1

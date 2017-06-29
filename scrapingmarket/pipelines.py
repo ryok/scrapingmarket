@@ -74,9 +74,9 @@ class MongoPipeline(object):
 
     def process_item(self, item, spider):
         # Create some documents
-        self.date = item['title'].replace('落札結果（', '')
+        # self.date = item['title'].replace('落札結果（', '')
         self.data = {
-            'date':self.date,
+            'date':item['date'],
             'title':item['title'],
             'offer':item['offer']
         }
