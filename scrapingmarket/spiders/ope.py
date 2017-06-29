@@ -10,7 +10,7 @@ class OpeSpider(scrapy.Spider):
     start_urls = ['http://www3.boj.or.jp/market/jp/menuold_o_2017.htm']
 
     def parse(self, response):
-        for url in response.css('ul a::attr("href")').re(r'stat/ba\d+.htm$'):
+        for url in response.css('td a::attr("href")').re(r'stat/ba\d+.htm$'):
             yield scrapy.Request(response.urljoin(url), self.parse_opes)
 
     def parse_opes(self, response):
