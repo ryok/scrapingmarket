@@ -30,10 +30,6 @@ class ValidationPipline(object):
 class MongoPipeline(object):
 
     def open_spider(self, spider):
-        #uri = "mongodb://scraping-pool-mongo:5rq1tRCSzkr6algHaLa9FZ4aFKGNcZ6FJgq9Z182fpiSxvKspf42wOGUoHPvHaq3NUMRunAcuHO1rTxUVeYjkg==@scraping-pool-mongo.documents.azure.com:10255/?ssl=true&replicaSet=globaldb"
-        #self.client = MongoClient(uri)
-        #self.db = self.client['scraping-book']
-        #self.collection = self.db['items']
         # Initialize the Python DocumentDB client
         self.client = document_client.DocumentClient(config['ENDPOINT'], {'masterKey': config['MASTERKEY']})
         # create a database if not yet created
@@ -71,16 +67,16 @@ class MongoPipeline(object):
         else:
             print ("collection is created:%s" % config['DOCUMENTDB_COLLECTION'])
             self.collection = self.client.CreateCollection(self.db['_self'], self.collection_definition, self.options)
-
-    #def close_spider(self, spider):
-        #self.client.close()
+        #uri = "mongodb://scraping-pool-mongo:5rq1tRCSzkr6algHaLa9FZ4aFKGNcZ6FJgq9Z182fpiSxvKspf42wOGUoHPvHaq3NUMRunAcuHO1rTxUVeYjkg==@scraping-pool-mongo.documents.azure.com:10255/?ssl=true&replicaSet=globaldb"
+        #self.client = MongoClient(uri)
+        #self.db = self.client['scraping-book']
+        #self.collection = self.db['items']
 
     def process_item(self, item, spider):
-        #self.collection.insert_one(dict(item))
-        #return item
         # Create some documents
+        self.date = item['title'].replace('落札結果（', '')
         self.data = {
-            'date':item['title'],
+            'date':self.date,
             'title':item['title'],
             'offer':item['offer']
         }
@@ -98,3 +94,5 @@ class MongoPipeline(object):
             print ("document is added:title: %s" % self.data['title'])
             self.created_document = self.client.CreateDocument(
                     self.collection['_self'], self.data)
+        #self.collection.insert_one(dict(item))
+        #return item
