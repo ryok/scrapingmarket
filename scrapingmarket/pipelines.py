@@ -69,7 +69,7 @@ class MongoPipeline(object):
             print ("collection is created:%s" % config['DOCUMENTDB_COLLECTION'])
             collection = client.CreateCollection(db['_self'], collection_definition, options)
 
-    def close_spider(self, spider):
+    #def close_spider(self, spider):
         #self.client.close()
 
     def process_item(self, item, spider):
