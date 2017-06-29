@@ -78,6 +78,7 @@ class MongoPipeline(object):
         #for entry in item:
         #self.date = re.sub('^ooo', '', item['title'])
         self.data = {
+            'date':item['date'],
             'url':item['url'],
             'title':item['title'],
             'offer':item['offer']
