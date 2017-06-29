@@ -6,6 +6,9 @@
 # See: http://doc.scrapy.org/en/latest/topics/item-pipeline.html
 #from pymongo import MongoClient
 from scrapy.exceptions import DropItem
+import pydocumentdb
+import pydocumentdb.document_client as document_client
+
 
 config = { 
     'ENDPOINT': 'https://scraping-pool-documentdb.documents.azure.com:443/',
@@ -32,7 +35,7 @@ class MongoPipeline(object):
         #self.db = self.client['scraping-book']
         #self.collection = self.db['items']
         # Initialize the Python DocumentDB client
-        client = document_client.DocumentClient(config['ENDPOINT'], {'masterKey': config['MASTERKEY']})
+        self.client = document_client.DocumentClient(config['ENDPOINT'], {'masterKey': config['MASTERKEY']})
         # create a database if not yet created
         database_definition = {'id': config['DOCUMENTDB_DATABASE'] }
         databases = list(client.QueryDatabases({
@@ -42,10 +45,10 @@ class MongoPipeline(object):
                 ]
             }))
         if ( len(databases) > 0 ):
-            db = databases[0]
+            self.db = databases[0]
         else:
             print ("database is created:%s" % config['DOCUMENTDB_DATABASE'])
-            db = client.CreateDatabase(database_definition)
+            self.db = client.CreateDatabase(database_definition)
 
         # Create collection options
         options = {
@@ -55,8 +58,8 @@ class MongoPipeline(object):
         }
         # create a collection if not yet created
         collection_definition = { 'id': config['DOCUMENTDB_COLLECTION'] }
-        collections = list(client.QueryCollections(
-            db['_self'],
+        self.collections = list(client.QueryCollections(
+            self.db['_self'],
             {
                 'query': 'SELECT * FROM root r WHERE r.id=@id',
                 'parameters': [
@@ -64,10 +67,10 @@ class MongoPipeline(object):
                 ]
             }))
         if ( len(collections) > 0 ):
-            collection = collections[0]
+            self.collection = collections[0]
         else:
             print ("collection is created:%s" % config['DOCUMENTDB_COLLECTION'])
-            collection = client.CreateCollection(db['_self'], collection_definition, options)
+            self.collection = client.CreateCollection(db['_self'], collection_definition, options)
 
     #def close_spider(self, spider):
         #self.client.close()
