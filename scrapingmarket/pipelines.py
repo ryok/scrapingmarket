@@ -45,32 +45,32 @@ class MongoPipeline(object):
                 ]
             }))
         if ( len(self.databases) > 0 ):
-            self.db = databases[0]
+            self.db = self.databases[0]
         else:
             print ("database is created:%s" % config['DOCUMENTDB_DATABASE'])
             self.db = self.client.CreateDatabase(self.database_definition)
 
         # Create collection options
-        options = {
+        self.options = {
             'offerEnableRUPerMinuteThroughput': True,
             'offerVersion': "V2",
             'offerThroughput': 400
         }
         # create a collection if not yet created
-        collection_definition = { 'id': config['DOCUMENTDB_COLLECTION'] }
-        self.collections = list(client.QueryCollections(
+        self.collection_definition = { 'id': config['DOCUMENTDB_COLLECTION'] }
+        self.collections = list(self.client.QueryCollections(
             self.db['_self'],
             {
                 'query': 'SELECT * FROM root r WHERE r.id=@id',
                 'parameters': [
-                    { 'name':'@id', 'value': collection_definition['id'] }
+                    { 'name':'@id', 'value': self.collection_definition['id'] }
                 ]
             }))
-        if ( len(collections) > 0 ):
-            self.collection = collections[0]
+        if ( len(self.collections) > 0 ):
+            self.collection = self.collections[0]
         else:
             print ("collection is created:%s" % config['DOCUMENTDB_COLLECTION'])
-            self.collection = client.CreateCollection(db['_self'], collection_definition, options)
+            self.collection = self.client.CreateCollection(db['_self'], self.collection_definition, self.options)
 
     #def close_spider(self, spider):
         #self.client.close()
@@ -79,22 +79,22 @@ class MongoPipeline(object):
         #self.collection.insert_one(dict(item))
         #return item
         # Create some documents
-        data = {
+        self.data = {
             'date':item['title'],
             'title':item['title'],
             'offer':item['offer']
         }
         # check if duplicated
-        documents = list(client.QueryDocuments(
-            collection['_self'],
+        self.documents = list(self.client.QueryDocuments(
+            self.collection['_self'],
             {
                 'query': 'SELECT * FROM root r WHERE r.title=@title',
                 'parameters': [
-                    { 'name':'@title', 'value':data['title'] }
+                    { 'name':'@title', 'value':self.data['title'] }
                 ]
             }))
-        if (len(documents) < 1):
+        if (len(self.documents) < 1):
             # only create if it's fully new document
-            print ("document is added:title: %s" % data['title'])
-            created_document = client.CreateDocument(
-                    collection['_self'], data)
+            print ("document is added:title: %s" % self.data['title'])
+            self.created_document = self.client.CreateDocument(
+                    self.collection['_self'], self.data)
