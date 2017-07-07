@@ -79,9 +79,10 @@ class MongoPipeline(object):
         #self.date = re.sub('^ooo', '', item['title'])
         pattern = "^国債買入"
         for offer_content in item['offer']:
+            #print ('####### ' + str(offer_content))
             matchOB = re.search(pattern, offer_content)
             if matchOB:
-                print (matchOB)
+                print ('######' + matchOB)
 
         self.data = {
             'date':item['date'],
