@@ -77,6 +77,12 @@ class MongoPipeline(object):
         # Create some documents
         #for entry in item:
         #self.date = re.sub('^ooo', '', item['title'])
+        pattern = "^国債買入"
+        for offer_content in item['offer']:
+            matchOB = re.search(pattern, offer_content)
+            if matchOB:
+                print (matchOB)
+
         self.data = {
             'date':item['date'],
             'title':item['title'],
@@ -98,5 +104,5 @@ class MongoPipeline(object):
             print ("document is added:title: %s" % self.data['title'])
             self.created_document = self.client.CreateDocument(
                     self.collection['_self'], self.data)
-    #self.collection.insert_one(dict(item))
-        #return item
+        #self.collection.insert_one(dict(item))
+            #return item
