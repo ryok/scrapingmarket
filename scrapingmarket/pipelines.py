@@ -77,7 +77,7 @@ class MongoPipeline(object):
         # Create some documents
         #for entry in item:
         #self.date = re.sub('^ooo', '', item['title'])
-        pattern = r"国債買入"
+        pattern = r"-0"
         for offer_content in item['offer']:
             #print ('####### ' + str(offer_content))
             matchOB = re.match(pattern, offer_content)
