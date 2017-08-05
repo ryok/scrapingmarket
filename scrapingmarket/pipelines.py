@@ -12,8 +12,10 @@ import pydocumentdb.document_client as document_client
 
 
 config = { 
-    'ENDPOINT': 'https://scraping-pool-documentdb.documents.azure.com:443/',
-    'MASTERKEY': 'XSgJ6wV0b6a6vIpOf4aAHKvvgWRVRP78FgtKGRS83GIHokyKCRvaadkOARGVHUFXlsJfuZDWplpOGdpSzOqUzg==',
+    # 'ENDPOINT': 'https://scraping-pool-documentdb.documents.azure.com:443/',
+    'ENDPOINT': 'https://scraping-book-documentdb.documents.azure.com:443/',
+    # 'MASTERKEY': 'XSgJ6wV0b6a6vIpOf4aAHKvvgWRVRP78FgtKGRS83GIHokyKCRvaadkOARGVHUFXlsJfuZDWplpOGdpSzOqUzg==',
+    'MASTERKEY': 'NOIYanIfbKhQTVz3nJujXIcEGfllEhmaT0otH1AYsmfBN89tEuB9H9mWlpMhsA9zatR84mY8fNq8u0YRYI1bCg==',
     'DOCUMENTDB_DATABASE': 'scraping-book',
     'DOCUMENTDB_COLLECTION': 'market-operations'
 };
