@@ -2,7 +2,7 @@
 import re
 import scrapy
 from scrapingmarket.items import OpeOffer
-
+import pandas
 
 class OpeSpider(scrapy.Spider):
     name = 'ope'
@@ -12,18 +12,19 @@ class OpeSpider(scrapy.Spider):
 
     def parse(self, response):
         for url in response.css('td a::attr("href")').re(r'stat/ba\d+.htm$'):
-            yield scrapy.Request(pandas.io.html.read_html(url), self.parse_opes)
+            yield scrapy.Request(response.urljoin(url), self.parse_opes)
 
     def parse_opes(self, response):
         """
         ページからオペの内容を抜き出す
         """
+        fetched_dataframes = pandas.io.html.read_html(url)
+
         item = OpeOffer()
         item['date'] = re.sub('^ba','20',re.sub('.htm$','',response.url.split('/')[-1]) )
         # item['title'] = response.css('title::text').extract()
         item['header'] = response.css('th::text').extract()
         item['bid'] = response.css('td::text').extract()
-        fetched_dataframes = response
         item['url'] = response.url
         #num = 1
         #for tr in response.css('tr::text').extract():
