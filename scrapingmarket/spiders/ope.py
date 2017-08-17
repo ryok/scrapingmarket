@@ -19,12 +19,13 @@ class OpeSpider(scrapy.Spider):
         ページからオペの内容を抜き出す
         """
         fetched_dataframes = pandas.io.html.read_html(response.url)
+        print (fetched_dataframes[1])
 
         item = OpeOffer()
         item['date'] = re.sub('^ba','20',re.sub('.htm$','',response.url.split('/')[-1]) )
         # item['title'] = response.css('title::text').extract()
         item['header'] = response.css('th::text').extract()
-        item['bid'] = response.css('td::text').extract()
+        item['offer'] = response.css('td::text').extract()
         item['url'] = response.url
         #num = 1
         #for tr in response.css('tr::text').extract():
