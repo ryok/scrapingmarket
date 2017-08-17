@@ -23,6 +23,7 @@ class OpeSpider(scrapy.Spider):
         # item['title'] = response.css('title::text').extract()
         item['header'] = response.css('th::text').extract()
         item['bid'] = response.css('td::text').extract()
+        fetched_dataframes = response
         item['url'] = response.url
         #num = 1
         #for tr in response.css('tr::text').extract():

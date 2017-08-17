@@ -28,7 +28,7 @@ ROBOTSTXT_OBEY = True
 # See http://scrapy.readthedocs.org/en/latest/topics/settings.html#download-delay
 # See also autothrottle settings and docs
 #DOWNLOAD_DELAY = 3
-DOWNLOAD_DELAY = 1 
+DOWNLOAD_DELAY = 1
 # The download delay setting will honor only one of:
 #CONCURRENT_REQUESTS_PER_DOMAIN = 16
 #CONCURRENT_REQUESTS_PER_IP = 16
@@ -69,7 +69,7 @@ DOWNLOAD_DELAY = 1
 #    'scrapingmarket.pipelines.ScrapingmarketPipeline': 300,
 #}
 ITEM_PIPELINES = {
-    'scrapingmarket.pipelines.MongoPipeline': 800,
+    # 'scrapingmarket.pipelines.MongoPipeline': 800,
     'scrapingmarket.pipelines.ValidationPipline': 300,
 }
 
