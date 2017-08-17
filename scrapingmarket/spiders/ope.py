@@ -18,7 +18,7 @@ class OpeSpider(scrapy.Spider):
         """
         ページからオペの内容を抜き出す
         """
-        fetched_dataframes = pandas.io.html.read_html(url)
+        fetched_dataframes = pandas.io.html.read_html(response.url)
 
         item = OpeOffer()
         item['date'] = re.sub('^ba','20',re.sub('.htm$','',response.url.split('/')[-1]) )
