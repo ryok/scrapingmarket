@@ -79,12 +79,12 @@ class MongoPipeline(object):
         # Create some documents
         #for entry in item:
         #self.date = re.sub('^ooo', '', item['title'])
-        pattern = r"-0"
-        for offer_content in item['offer']:
-            #print ('####### ' + str(offer_content))
-            matchOB = re.match(pattern, offer_content)
-            if matchOB:
-                print ('######' + matchOB)
+        
+        # pattern = r"-0"
+        # for offer_content in item['offer']:
+        #     matchOB = re.match(pattern, offer_content)
+        #     if matchOB:
+        #         print ('######' + matchOB)
 
         self.data = {
             'date':item['date'],

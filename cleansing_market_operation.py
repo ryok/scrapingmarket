@@ -2,25 +2,18 @@
 
 import sys
 import re
-# import xlrd
-# import json
 import collections as cl
+import pandas as pd
+import chardet
+from urllib.request import urlopen
 import pydocumentdb
 import pydocumentdb.document_client as document_client
 sys.path.append('../Util')
 import documentdb_util
 import date_util
 
-config = { 
-    'ENDPOINT': 'https://scraping-pool-documentdb.documents.azure.com:443/',
-    'MASTERKEY': 'XSgJ6wV0b6a6vIpOf4aAHKvvgWRVRP78FgtKGRS83GIHokyKCRvaadkOARGVHUFXlsJfuZDWplpOGdpSzOqUzg==',
-    'DOCUMENTDB_DATABASE': 'scraping-book',
-    'DOCUMENTDB_COLLECTION_FROM': 'market-operations',
-    'DOCUMENTDB_COLLECTION_TO': 'market-operations-cleansed',
-};
 
-
-def selectFromDocmentDb():
+def cleansingMarketOperation():
 
     documentDbUtil = documentdb_util.DocumentDBUtil()
     dateUtil = date_util.DateUtil()
@@ -30,55 +23,19 @@ def selectFromDocmentDb():
     remaining_years_list = []
     price_list = []
     price_add_count = 0
-
-    # Initialize the Python DocumentDB client
-    client = document_client.DocumentClient(config['ENDPOINT'], {'masterKey': config['MASTERKEY']})
-    # create a database if not yet created
-    database_definition = {'id': config['DOCUMENTDB_DATABASE'] }
-    databases = list(client.QueryDatabases({
-            'query': 'SELECT * FROM root r WHERE r.id=@id',
-            'parameters': [
-                { 'name':'@id', 'value': database_definition['id'] }
-            ]
-        }))
-    if ( len(databases) > 0 ):
-        db = databases[0]
-    else:
-        print ("database is not found:%s" % config['DOCUMENTDB_DATABASE'])
-
-    # Create collection options
-    options = {
-        'offerEnableRUPerMinuteThroughput': True,
-        'offerVersion': "V2",
-        'offerThroughput': 400
-    }
-    # create a collection if not yet created
-    collection_definition = { 'id': config['DOCUMENTDB_COLLECTION_FROM'] }
-    collections = list(client.QueryCollections(
-        db['_self'],
-        {
-            'query': 'SELECT * FROM root r WHERE r.id=@id',
-            'parameters': [
-                { 'name':'@id', 'value': collection_definition['id'] }
-            ]
-        }))
-    if ( len(collections) > 0 ):
-        collection = collections[0]
-    else:
-        print ("collection is not found:%s" % config['DOCUMENTDB_COLLECTION_FROM'])
-
-    # search documents
     condition_list = []
-    documents = list(client.QueryDocuments(
-        collection['_self'],
-        {
-            'query': 'SELECT * FROM c'
-        }))
+
+    ### ドキュメントDBから日銀オペ情報を取得
+    documents = documentDbUtil.getDocument('DOCUMENTDB_COLLECTION_MARKET_OPERATIONS')
+
     if (len(documents) < 1):
         print ("document is not found")
     else:
+        ### オペの内容の表の項目をループして必要項目を取得
         for doc in documents:
             for item in doc['offer']:
+
+                ### 1列目に国債買入という単語入っていた場合、2列目以降の値を取得
                 if price_add_count != 0:
                     i = 0
                     while i < price_add_count:
@@ -86,39 +43,50 @@ def selectFromDocmentDb():
                         i += 1
                     price_add_count = 0
                 else:
+                    ### date変換
+                    date_formated = dateUtil.convertString2Date(doc['date'])
+
+                    ### 国債買入の場合、内容を取得する
                     pattern = r"国債買入"
                     matchOB = re.match(pattern, item)
-                    date_formated = dateUtil.convertString2Date(doc['date'])
                     if matchOB:
-                        if "国債買入（変動利付債）" == item:
-                            date_list.append(date_formated)
-                            brand_type_list.append('変動利付債')
-                            remaining_years_list.append('-')
-                            condition_list.append(item)
-                            price_add_count += 1
-                        elif "国債買入（残存期間３年超５年以下）" == item:
-                            for num in [3,4,5]:
+                        if "国債買入（残存期間１年以下）" == item:
+                            for num in [0,1]:
                                 date_list.append(date_formated)
                                 brand_type_list.append('normal')
                                 remaining_years_list.append(num)
                                 condition_list.append(item)
                                 price_add_count += 1
                         elif "国債買入（残存期間１年超３年以下）" == item:
-                            for num in [1,2,3]:
+                            for num in [2,3]:
                                 date_list.append(date_formated)
                                 brand_type_list.append('normal')
                                 remaining_years_list.append(num)
                                 condition_list.append(item)
                                 price_add_count += 1
-                        elif "国債買入（残存期間２５年超）" == item:
-                            for num in range(25, 100):
+                        elif "国債買入（残存期間３年超５年以下）" == item:
+                            for num in [4,5]:
+                                date_list.append(date_formated)
+                                brand_type_list.append('normal')
+                                remaining_years_list.append(num)
+                                condition_list.append(item)
+                                price_add_count += 1
+                        elif "国債買入（残存期間５年超１０年以下）" == item:
+                            for num in range(6, 10):
                                 date_list.append(date_formated)
                                 brand_type_list.append('normal')
                                 remaining_years_list.append(num)
                                 condition_list.append(item)
                                 price_add_count += 1
                         elif "国債買入（残存期間１０年超２５年以下）" == item:
-                            for num in range(10, 25):
+                            for num in range(11, 25):
+                                date_list.append(date_formated)
+                                brand_type_list.append('normal')
+                                remaining_years_list.append(num)
+                                condition_list.append(item)
+                                price_add_count += 1
+                        elif "国債買入（残存期間２５年超）" == item:
+                            for num in range(26, 900):
                                 date_list.append(date_formated)
                                 brand_type_list.append('normal')
                                 remaining_years_list.append(num)
@@ -130,30 +98,23 @@ def selectFromDocmentDb():
                             remaining_years_list.append('-')
                             condition_list.append(item)
                             price_add_count += 1
-                        elif "国債買入（残存期間１年以下）" == item:
-                            for num in [0,1]:
-                                date_list.append(date_formated)
-                                brand_type_list.append('normal')
-                                remaining_years_list.append(num)
-                                condition_list.append(item)
-                                price_add_count += 1
-                        elif "国債買入（残存期間５年超１０年以下）" == item:
-                            for num in range(5, 10):
-                                date_list.append(date_formated)
-                                brand_type_list.append('normal')
-                                remaining_years_list.append(num)
-                                condition_list.append(item)
-                                price_add_count += 1
                         elif "国債買入（固定利回り方式）（残存期間５年超１０年以下）" == item:
-                            for num in range(5, 10):
+                            for num in range(6, 10):
                                 date_list.append(date_formated)
                                 brand_type_list.append('固定利回り方式')
                                 remaining_years_list.append(num)
                                 condition_list.append(item)
                                 price_add_count += 1
+                        elif "国債買入（変動利付債）" == item:
+                            date_list.append(date_formated)
+                            brand_type_list.append('変動利付債')
+                            remaining_years_list.append('-')
+                            condition_list.append(item)
+                            price_add_count += 1
                         else:
                             print ('Unexpected condtion found!:%s' % item)
     
+    ### DICTに詰め替え
     dict4store = []
     for i in range(len(date_list)):
         data = cl.OrderedDict()
@@ -165,9 +126,19 @@ def selectFromDocmentDb():
             data['price'] = price_list[i]
             data['condition'] = condition_list[i]
             dict4store.append(data)
-    documentDbUtil.store2DocmentDb('DOCUMENTDB_COLLECTION_MARKET_OPERATIONS', dict4store)
-    #condition_list_uq = list(set(condition_list))
+
+    ### ドキュメントdbに保存
+    # documentDbUtil.store2DocmentDb('DOCUMENTDB_COLLECTION_MARKET_OPERATIONS_CLEANSED', dict4store)
+
+    ### 条件一覧確認
+    condition_list_uq = list(set(condition_list))
+    print ('Here is the condition list...')
+    print (condition_list_uq)
+
+    ### csvファイルに出力（オプション）
+    df = pd.DataFrame.from_dict(dict4store)
+    df.to_csv('output.csv', encoding='shift_jis')
 
 
 if __name__ == '__main__':
-    selectFromDocmentDb()
+    cleansingMarketOperation()
