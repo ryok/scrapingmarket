@@ -1,1 +1,1 @@
-# scrapingmarket
+# scrapyを使ってWebクローリング・スクレイピングを実施し、Azure Document DBへ登録するサンプルプログラム

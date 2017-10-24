@@ -4,6 +4,7 @@
 #
 # Don't forget to add your pipeline to the ITEM_PIPELINES setting
 # See: http://doc.scrapy.org/en/latest/topics/item-pipeline.html
+
 #from pymongo import MongoClient
 from scrapy.exceptions import DropItem
 import re
@@ -12,10 +13,8 @@ import pydocumentdb.document_client as document_client
 
 
 config = { 
-    # 'ENDPOINT': 'https://scraping-pool-documentdb.documents.azure.com:443/',
-    'ENDPOINT': 'https://scraping-book-documentdb.documents.azure.com:443/',
-    # 'MASTERKEY': 'XSgJ6wV0b6a6vIpOf4aAHKvvgWRVRP78FgtKGRS83GIHokyKCRvaadkOARGVHUFXlsJfuZDWplpOGdpSzOqUzg==',
-    'MASTERKEY': 'NOIYanIfbKhQTVz3nJujXIcEGfllEhmaT0otH1AYsmfBN89tEuB9H9mWlpMhsA9zatR84mY8fNq8u0YRYI1bCg==',
+    'ENDPOINT': '<<end point url>>',
+    'MASTERKEY': '<<master key>>',
     'DOCUMENTDB_DATABASE': 'scraping-book',
     'DOCUMENTDB_COLLECTION': 'market-operations'
 };
@@ -70,22 +69,15 @@ class MongoPipeline(object):
         else:
             print ("collection is created:%s" % config['DOCUMENTDB_COLLECTION'])
             self.collection = self.client.CreateCollection(self.db['_self'], self.collection_definition, self.options)
-        #uri = "mongodb://scraping-pool-mongo:5rq1tRCSzkr6algHaLa9FZ4aFKGNcZ6FJgq9Z182fpiSxvKspf42wOGUoHPvHaq3NUMRunAcuHO1rTxUVeYjkg==@scraping-pool-mongo.documents.azure.com:10255/?ssl=true&replicaSet=globaldb"
+
+        ### Mongo
+        #uri = "mongodb://scraping-pool-mongoXXX"
         #self.client = MongoClient(uri)
         #self.db = self.client['scraping-book']
         #self.collection = self.db['items']
 
     def process_item(self, item, spider):
         # Create some documents
-        #for entry in item:
-        #self.date = re.sub('^ooo', '', item['title'])
-        
-        # pattern = r"-0"
-        # for offer_content in item['offer']:
-        #     matchOB = re.match(pattern, offer_content)
-        #     if matchOB:
-        #         print ('######' + matchOB)
-
         self.data = {
             'date':item['date'],
             'title':item['title'],
@@ -107,5 +99,7 @@ class MongoPipeline(object):
             print ("document is added:title: %s" % self.data['title'])
             self.created_document = self.client.CreateDocument(
                     self.collection['_self'], self.data)
+        
+        ### Mongo
         #self.collection.insert_one(dict(item))
             #return item
